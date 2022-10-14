@@ -112,7 +112,7 @@ const number = 123456789;
 let lines = Array(5).fill('');
 
 for (const digit of number.toString()) {
-  const lcd = REPRESENTATIONS[digit]
+  const lcd = REPRESENTATIONS[Number(digit)]
 
   // Add each line of the lcd representation
   for (const index in lines) {
