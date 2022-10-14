@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Destructible elements</title>
+  <style>
+    p {
+      border: 1px solid gray;
+      background-color: lightblue;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- 
+        Realiza un programa que tenga 10 elementos <p> y al hacer clic sobre ellos desaparezcan (se
+        oculten) y al hacer doble clic (los elimine del DOM). También deberá tener un botón “Reaparecer”
+        que hará que aparezcan todos los elementos desaparecidos (pero no los eliminados). 
+    -->
+
+  <p>Paragraph 1</p>
+  <p>Paragraph 2</p>
+  <p>Paragraph 3</p>
+  <p>Paragraph 4</p>
+  <p>Paragraph 5</p>
+  <p>Paragraph 6</p>
+  <p>Paragraph 7</p>
+  <p>Paragraph 8</p>
+  <p>Paragraph 9</p>
+  <p>Paragraph 10</p>
+
+  <button id="show">Show hidden</button>
+
+  <script>
+
+    function hideElement(element) {
+      element.style.display = 'none';
+    }
+
+    function showAllElements() {
+      let ps = document.getElementsByTagName('p');
+      for(let p of ps) {
+        p.style.display = 'block';
+      }
+    }
+
+    function hide(event) {
+      // We need a delay to be able to dblclick elements
+      // If not, they are hidden on the first click and don't receive the second one
+      const DELAY_MS = 300;
+      setTimeout(() => hideElement(event.target), DELAY_MS);
+    }
+
+    function remove(event) {
+      document.body.removeChild(event.target);
+    }
+
+    function installHandlers() {
+      let ps = document.getElementsByTagName('p');
+      for(let p of ps) {
+        p.addEventListener('click', hide);
+        p.addEventListener('dblclick', remove);
+      }
+
+      document.getElementById('show').addEventListener('click', showAllElements);
+    }
+
+    installHandlers();
+  </script>
+</body>
+
+</html>
