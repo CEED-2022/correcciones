@@ -1,0 +1,16 @@
+{
+  "name": "eslint-template",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "license": "GPL-3.0-or-later",
+  "scripts": {
+    "eslint": "eslint --"
+  },
+  "dependencies": {
+    "eslint": "^8.23.1"
+  },
+  "devDependencies": {
+    "eslint-plugin-html": "^7.1.0"
+  }
+}
