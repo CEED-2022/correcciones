@@ -1,0 +1,116 @@
+<!DOCTYPE ht  ml>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <!--
+      Prepara un código JavaScript que, añadido a una página web, genere una tabla de contenido a
+      partir de las etiquetas <h1>, <h2>... El índice lo generará dentro de una etiqueta <pre>,
+      añadiendo espacios para que quede identado.
+  -->
+
+  <pre id="response"></pre>
+
+  <h1>Titulo 1</h1>
+    <h2>Titulo 1.1</h2>
+    <h2>Titulo 1.2</h2>
+      <h3>Titulo 1.2.1</h3>
+      <h3>Titulo 1.2.2</h3>
+    <h2>Titulo 1.3</h2>
+      <h3>Titulo 1.3.1</h3>
+  <h1>Titulo 2</h2>
+  <h1>Titulo 3</h3>
+    <h2>Titulo 3.1</h2>
+
+
+  <script>
+    console.clear()
+
+
+    function getPageIndex(DOMroot) {
+      /*
+        It will be better to have this function exported from a module, and the
+        inner functions as module's private functions
+
+        We will see modules in a later unit
+      */
+
+      function nodeLevel(title) {
+        return Number(title.tagName.at(-1))
+      }
+
+      function nodeIndex(titleElements, position, currentLevel) {
+        const length = titleElements.length
+        let result = []
+
+        while(position < length) {
+          const titleElement = titleElements[position]
+          const elementLevel = nodeLevel(titleElement)
+
+          const node = {
+            title: titleElement.innerHTML,
+            subtitles: []
+          }
+
+          // The node belongs to the level we are processing, we can just add it to the list
+          if(elementLevel === currentLevel ) {
+            result.push(node)
+            position++
+          }
+
+          // The node will belong to the last node's sublist
+          if(elementLevel > currentLevel) {
+            const { data, position: newPosition } = nodeIndex(titleElements, position, currentLevel+1)
+            position = newPosition
+            result.at(-1).subtitles = data
+          }
+
+          // The this node is outside of the scope of this call: it will be processed by the caller
+          if(elementLevel < currentLevel) break
+
+        }
+
+        return {
+          data: result,
+          position: position
+        };
+      }
+
+      const titleElements = DOMroot.querySelectorAll('h1,h2,h3,h4,h5,h6')
+      return nodeIndex(titleElements, 0, 1).data
+    }
+
+    function generateIndexText(indexData) {
+      function generateEntryText(indexEntries, level, prefix) {
+
+        const identation = '  '.repeat(level-1)
+        let result = []
+
+        for(let i = 0; i < indexEntries.length; i++) {
+          const entry = indexEntries[i]
+          let entryText = `${identation} ${prefix}${i+1}.- ` + entry.title
+          result.push(entryText)
+
+          if(entry.subtitles.length > 0) {
+            let subIndex = generateEntryText(entry.subtitles, level+1, `${prefix}${i+1}.`)
+            result.push(subIndex)
+          }
+        }
+
+        return result.join('\n')
+      }
+
+      return generateEntryText(indexData, 1, '')
+    }
+
+    const text = generateIndexText(getPageIndex(document))
+    document.getElementById('response').innerText = text
+  </script>
+
+
+</body>
+</html>
